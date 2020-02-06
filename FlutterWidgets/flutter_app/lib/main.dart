@@ -16,6 +16,7 @@ import 'DraggableWidget.dart';
 import 'FadeInImageWidget.dart';
 import 'FittedBoxWidget.dart';
 import 'FlexibleWidget.dart';
+import 'InheritedModelExample.dart';
 import 'InheritedWidgetExample.dart';
 import 'LayoutBuilderWidget.dart';
 import 'LimitedBoxWidget.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyPage(1,2),
+      home: App(),
     );
   }
 }

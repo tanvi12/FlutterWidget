@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:random_color/random_color.dart';
 
-class CountModel extends InheritedWidget {
+class CountModel extends InheritedModel<String> {
   final int count;
+  final String text;
 
-  CountModel({this.count, child}) : super(child: child);
+  CountModel({this.count,this.text, child}) : super(child: child);
 
   @override
   bool updateShouldNotify(CountModel oldWidget) {
-    if (oldWidget.count != count) {
+    if (oldWidget.count != count ) {
       return true;
     }
     return false;
   }
 
-  static CountModel of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(CountModel) as CountModel;
+  @override
+  bool updateShouldNotifyDependent(
+      InheritedModel<String> oldWidget, Set<String> dependencies) {
+    if (dependencies.contains('counter')) {
+      return true;
+    }
+    return false;
+  }
+
+  static CountModel of(BuildContext context, String aspect) {
+    return InheritedModel.inheritFrom<CountModel>(context, aspect: aspect);
+  }
 }
 
-class InheritedWidgetExample extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,14 +54,16 @@ class CounterState extends State<Counter> {
       appBar: AppBar(
           // title: Text("Counter"),
           ),
-      body: CountModel(
-        count: count,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[const CounterText(), const CounterText2()],
-          ),
-        ),
+      body:
+          CountModel(
+            count: count,
+              text: "Hey theree",
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[ const CounterText(),  const CounterText2()],
+                ),
+              ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -64,15 +77,12 @@ class CounterState extends State<Counter> {
             child: Icon(Icons.add),
           ),
           SizedBox(
-            width: 50,
-            height: 50,
-            child: Container(
-              color: RandomColor().randomColor(),
-            ),
+            width: 10,
           ),
           FloatingActionButton(
             onPressed: () {
-              setState(() {});
+              setState(() {
+              });
             },
             child: Icon(Icons.remove),
           )
@@ -87,10 +97,10 @@ class CounterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CountModel model = CountModel.of(context);
+    CountModel model = CountModel.of(context, 'counter');
     return Text(
       'Count: ${model.count}',
-      style: TextStyle(color: RandomColor().randomColor(), fontSize: 30),
+      style: TextStyle(color: RandomColor().randomColor(),fontSize: 30),
     );
   }
 }
@@ -100,10 +110,10 @@ class CounterText2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CountModel model = CountModel.of(context);
+    CountModel model = CountModel.of(context, 'text');
     return Text(
-      'Count: ${model.count}',
-      style: TextStyle(color: RandomColor().randomColor(), fontSize: 30),
+      '${model.text}',
+      style: TextStyle(color: RandomColor().randomColor(),fontSize: 30),
     );
   }
 }
